@@ -1,0 +1,39 @@
+2026.04.24-01:25:18.324 client=local handler=cli status=OK query=CREATE DATABASE course
+2026.04.24-01:25:18.328 client=local handler=cli status=OK query=USE course
+2026.04.24-01:25:18.331 client=local handler=cli status=OK query=CREATE TABLE students (
+  id int INDEXED,
+  name string NOT_NULL,
+  group_name string DEFAULT "IU7",
+  age int
+)
+2026.04.24-01:25:18.335 client=local handler=cli status=OK query=INSERT INTO students (id, name, age) VALUE
+  (1, "Ivan", 19),
+  (2, "Anna", 20),
+  (3, "Petr", 21)
+2026.04.24-01:25:18.337 client=local handler=cli status=OK query=SELECT * FROM students
+2026.04.24-01:25:18.338 client=local handler=cli status=OK query=SELECT (id, name AS student, age) FROM students WHERE id == 2
+2026.04.24-01:25:18.339 client=local handler=cli status=OK query=SELECT (COUNT(id) AS total, AVG(age) AS avg_age, SUM(age) AS sum_age) FROM students WHERE age >= 19 AND age < 22
+2026.04.24-01:25:18.344 client=local handler=cli status=OK query=UPDATE students SET age = 22 WHERE name LIKE "A.*"
+2026.04.24-01:25:18.345 client=local handler=cli status=OK query=SELECT * FROM students WHERE age BETWEEN 20 AND 23
+2026.04.24-01:25:18.348 client=local handler=cli status=OK query=DELETE FROM students WHERE id == 3
+2026.04.24-01:25:18.349 client=local handler=cli status=OK query=SELECT * FROM students
+2026.04.24-01:26:28.656 client=local handler=cli status=OK query=DROP DATABASE course
+2026.04.24-01:26:28.658 client=local handler=cli status=OK query=CREATE DATABASE course
+2026.04.24-01:26:28.658 client=local handler=cli status=OK query=USE course
+2026.04.24-01:26:28.660 client=local handler=cli status=OK query=CREATE TABLE students (
+  id int INDEXED,
+  name string NOT_NULL,
+  group_name string DEFAULT "IU7",
+  age int
+)
+2026.04.24-01:26:28.663 client=local handler=cli status=OK query=INSERT INTO students (id, name, age) VALUE
+  (1, "Ivan", 19),
+  (2, "Anna", 20),
+  (3, "Petr", 21)
+2026.04.24-01:26:28.663 client=local handler=cli status=OK query=SELECT * FROM students
+2026.04.24-01:26:28.664 client=local handler=cli status=OK query=SELECT (id, name AS student, age) FROM students WHERE id == 2
+2026.04.24-01:26:28.666 client=local handler=cli status=OK query=SELECT (COUNT(id) AS total, AVG(age) AS avg_age, SUM(age) AS sum_age) FROM students WHERE age >= 19 AND age < 22
+2026.04.24-01:26:28.670 client=local handler=cli status=OK query=UPDATE students SET age = 22 WHERE name LIKE "A.*"
+2026.04.24-01:26:28.671 client=local handler=cli status=OK query=SELECT * FROM students WHERE age BETWEEN 20 AND 23
+2026.04.24-01:26:28.674 client=local handler=cli status=OK query=DELETE FROM students WHERE id == 3
+2026.04.24-01:26:28.675 client=local handler=cli status=OK query=SELECT * FROM students

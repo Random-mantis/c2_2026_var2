@@ -1,0 +1,4 @@
+id|int|1|1|0|
+name|string|1|0|0|
+group_name|string|0|0|1|"IU7"
+age|int|0|0|0|
