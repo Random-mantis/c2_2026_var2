@@ -25,14 +25,16 @@ static std::string trim(const std::string& s) {
     while (b < e && std::isspace((unsigned char)s[b])) ++b;
     while (e > b && std::isspace((unsigned char)s[e - 1])) --e;
     return s.substr(b, e - b);
-}
+} // Избавление от пробелов
 
 static std::string upper(std::string s) {
     for (char& c : s) c = (char)std::toupper((unsigned char)c);
     return s;
-}
+} //Превращение в верхний регистр.
 
-static bool ieq(const std::string& a, const std::string& b) { return upper(a) == upper(b); }
+static bool ieq(const std::string& a, const std::string& b) { 
+    return upper(a) == upper(b); 
+} //Проверка на эквивалентность без учёта регистра
 
 static std::vector<std::string> splitTop(const std::string& s, char sep) {
     std::vector<std::string> out;
@@ -52,7 +54,7 @@ static std::vector<std::string> splitTop(const std::string& s, char sep) {
     }
     if (!trim(cur).empty()) out.push_back(trim(cur));
     return out;
-}
+} // Разбивает строку по разделителю (можно в sep поставить " " по умолчанию.)
 
 static std::string nowStamp() {
     auto now = std::chrono::system_clock::now();
@@ -67,50 +69,75 @@ static std::string nowStamp() {
     std::ostringstream os;
     os << std::put_time(&tm, "%Y.%m.%d-%H:%M:%S") << "." << std::setw(3) << std::setfill('0') << ms.count();
     return os.str();
-}
+} //Ввод текущего времени в поток ввода
 
 static bool validName(const std::string& s) {
     if (s.empty() || std::isdigit((unsigned char)s[0])) return false;
     for (char c : s) if (!std::isalnum((unsigned char)c) && c != '_') return false;
     return true;
-}
+} // Проверка на правильность имён переменных.
 
 struct InternPool {
     std::set<std::string> values;
-    const std::string& get(const std::string& s) { return *values.insert(s).first; }
-};
+    const std::string& get(const std::string& s) { 
+        return *values.insert(s).first; 
+    } //Возвращает позицию (итератор) на переменную.
+}; // Структура для возможности паралелльных процессов.
 
 struct Value {
     enum Type { Null, Int, String } type = Null;
     int i = 0;
     const std::string* s = nullptr;
 
-    static Value null() { return {}; }
-    static Value integer(int v) { Value x; x.type = Int; x.i = v; return x; }
-    static Value string(const std::string& v, InternPool& pool) { Value x; x.type = String; x.s = &pool.get(v); return x; }
+    static Value null() { 
+        return {}; 
+    }
+    
+    static Value integer(int v) { 
+        Value x; 
+        x.type = Int; 
+        x.i = v; 
+        return x; 
+    }
+
+    static Value string(const std::string& v, InternPool& pool) { 
+        Value x; 
+        x.type = String; 
+        x.s = &pool.get(v); 
+        return x; 
+    } //Возаращение value разных типов
+
     std::string str() const {
         if (type == Null) return "NULL";
         if (type == Int) return std::to_string(i);
         return *s;
-    }
+    } //Возвращение значения переменной в строчном виде.
+    
     std::string json() const {
         if (type == Null) return "null";
         if (type == Int) return std::to_string(i);
         std::string r = "\"";
-        for (char c : *s) { if (c == '"' || c == '\\') r.push_back('\\'); r.push_back(c); }
+        for (char c : *s) { 
+            if (c == '"' || c == '\\') r.push_back('\\'); 
+            r.push_back(c); 
+        }
         return r + "\"";
-    }
-};
+    } //Возвращение value для json файла
+}; // Структура для значений в базе данных
 
 static int cmpValue(const Value& a, const Value& b) {
     if (a.type != b.type) return (int)a.type < (int)b.type ? -1 : 1;
     if (a.type == Value::Null) return 0;
     if (a.type == Value::Int) return (a.i < b.i) ? -1 : (a.i > b.i ? 1 : 0);
     return a.s->compare(*b.s);
-}
+} //Сравнение значений переменных
 
-static bool operator<(const Value& a, const Value& b) { return cmpValue(a, b) < 0; }
-static bool operator==(const Value& a, const Value& b) { return cmpValue(a, b) == 0; }
+static bool operator<(const Value& a, const Value& b) { 
+    return cmpValue(a, b) < 0; 
+} 
+static bool operator==(const Value& a, const Value& b) { 
+    return cmpValue(a, b) == 0; 
+} //Переопределённые операторы сравнения
 
 enum class ColType { Int, String };
 struct Column {
@@ -120,20 +147,21 @@ struct Column {
     bool indexed = false;
     bool hasDefault = false;
     Value def;
-};
-using Row = std::vector<Value>;
+}; //Структура для столбика в базе данных.
+
+using Row = std::vector<Value>; //Тип строк в базе данных
 
 template<class K, class V, size_t ORDER = 4>
 class BPlusTree {
     struct Node {
-        bool leaf;
-        std::vector<K> keys;
-        std::vector<std::unique_ptr<Node>> child;
-        std::vector<V> vals;
-        Node* next = nullptr;
-        explicit Node(bool l) : leaf(l) {}
-    };
-    std::unique_ptr<Node> root = std::make_unique<Node>(true);
+        bool leaf; //Является ли узел листом
+        std::vector<K> keys; //Массив ключей
+        std::vector<std::unique_ptr<Node>> child; // Указатель на ребёнка
+        std::vector<V> vals; //Массив значений
+        Node* next = nullptr; //Следующий элемент в односвязном списке листьев
+        explicit Node(bool l) : leaf(l) {} //Конструктор для определения типа узла
+    }; // Структура узла дерева
+    std::unique_ptr<Node> root = std::make_unique<Node>(true); //Корень дерева.
 
     void splitChild(Node* parent, size_t idx) {
         Node* n = parent->child[idx].get();
@@ -156,7 +184,8 @@ class BPlusTree {
             parent->keys.insert(parent->keys.begin() + idx, up);
         }
         parent->child.insert(parent->child.begin() + idx + 1, std::move(right));
-    }
+    } //Разделение узла дерева для вставки нового ключа при переполнении. Должна делить не на 2 а как при быстрой сортировке
+
 
     bool insertNonFull(Node* n, const K& k, const V& v) {
         if (n->leaf) {
@@ -173,7 +202,7 @@ class BPlusTree {
             if (!(k < n->keys[i])) ++i;
         }
         return insertNonFull(n->child[i].get(), k, v);
-    }
+    } //Вставка ключа в узел, если он не переполнен
 
 public:
     bool insert(const K& k, const V& v) {
@@ -183,8 +212,9 @@ public:
             root = std::move(nr);
             splitChild(root.get(), 0);
         }
-        return insertNonFull(root.get(), k, v);
-    }
+        return insertNonFull(root.get(), k, v); 
+    }// Вставка в дерево
+
     bool find(const K& k, V& v) const {
         Node* n = root.get();
         while (!n->leaf) n = n->child[std::upper_bound(n->keys.begin(), n->keys.end(), k) - n->keys.begin()].get();
@@ -192,36 +222,49 @@ public:
         if (it == n->keys.end() || *it < k || k < *it) return false;
         v = n->vals[it - n->keys.begin()];
         return true;
-    }
-};
+    } //Проверка нахождения ключа в дереве, Нарушение SOLID!!!
+}; //B+ дерево, а где функция удаления?
 
 class Table {
-    fs::path dir;
-    InternPool& pool;
+    fs::path dir; // Путь к базе данных.
+    InternPool& pool; // Структура данных для паралелльности
 public:
-    std::vector<Column> cols;
-    std::vector<Row> rows;
-    std::unordered_map<std::string, BPlusTree<Value, size_t>> indexes;
+    std::vector<Column> cols; //Столбики базы данных
+    std::vector<Row> rows; //Строки базы данных
+    std::unordered_map<std::string, BPlusTree<Value, size_t>> indexes; //Для нахождения нужных элемнтов по имени столбца
 
-    Table(fs::path d, InternPool& p) : dir(std::move(d)), pool(p) {}
+    Table(fs::path d, InternPool& p) : dir(std::move(d)), pool(p) {} //Конструктор таблицы
 
     int colId(const std::string& name) const {
         for (size_t i = 0; i < cols.size(); ++i) if (cols[i].name == name) return (int)i;
         throw Error("unknown column: " + name);
-    }
-    fs::path schemaFile() const { return dir / "schema.txt"; }
-    fs::path rowsFile() const { return dir / "rows.tsv"; }
-    fs::path histFile() const { return dir / "history.log"; }
+    } //Вернуть индекс стобца с именем name в случае отсутствия -- ошибка
+
+    fs::path schemaFile() const { 
+        return dir / "schema.txt"; 
+    } // Возвращает путь для файла со схемой базы данных
+
+    fs::path rowsFile() const { 
+        return dir / "rows.tsv"; 
+    } // Возвращает путь для самой базы данных
+
+    fs::path histFile() const { 
+        return dir / "history.log"; 
+    } // Возвращает путь к файлу с историей изменения базы данныз.
 
     Value parseValue(const std::string& raw, ColType type) {
         std::string x = trim(raw);
         if (ieq(x, "NULL")) return Value::null();
         if (type == ColType::Int) {
-            try { return Value::integer(std::stoi(x)); } catch (...) { throw Error("expected int value: " + x); }
+            try { 
+                return Value::integer(std::stoi(x)); 
+            } catch (...) { 
+                throw Error("expected int value: " + x); 
+            }
         }
         if (x.size() < 2 || x.front() != '"' || x.back() != '"') throw Error("expected string literal: " + x);
         return Value::string(x.substr(1, x.size() - 2), pool);
-    }
+    } // Получаем значение
 
     void validateRow(const Row& r, int ignore = -1) const {
         for (size_t c = 0; c < cols.size(); ++c) {
@@ -235,7 +278,7 @@ public:
                 }
             }
         }
-    }
+    } // Проверка строк и столбцов на валиндность
 
     void rebuildIndexes() {
         indexes.clear();
@@ -243,7 +286,7 @@ public:
         for (size_t r = 0; r < rows.size(); ++r)
             for (size_t c = 0; c < cols.size(); ++c)
                 if (cols[c].indexed) indexes[cols[c].name].insert(rows[r][c], r);
-    }
+    } // Обновление индексов
 
     void load() {
         cols.clear(); rows.clear();
@@ -269,7 +312,7 @@ public:
             rows.push_back(row);
         }
         rebuildIndexes();
-    }
+    } // Загружаем базу данных из файла.
 
     void save() const {
         fs::create_directories(dir);
@@ -288,7 +331,7 @@ public:
             }
             r << '\n';
         }
-    }
+    } // Сохраняем изменения в базе данных
 
     void snapshot() const {
         fs::create_directories(dir);
@@ -302,7 +345,7 @@ public:
             h << '\n';
         }
         h << "#\n";
-    }
+    } //Создание копии состояния базы данных
 
     void revert(const std::string& ts) {
         std::ifstream h(histFile());
@@ -324,7 +367,7 @@ public:
         }
         rebuildIndexes();
         save();
-    }
+    } //Возврат к последней сделанной копии базы данных.
 };
 
 struct Lexer {
@@ -332,16 +375,27 @@ struct Lexer {
     size_t p = 0;
     explicit Lexer(const std::string& s) {
         for (size_t i = 0; i < s.size();) {
-            if (std::isspace((unsigned char)s[i])) { ++i; continue; }
+            if (std::isspace((unsigned char)s[i])) { 
+                ++i; 
+                continue; 
+            }
+            
             if (s[i] == '"') {
                 size_t j = i + 1;
-                while (j < s.size() && s[j] != '"') { if (s[j] == '\\') ++j; ++j; }
+                while (j < s.size() && s[j] != '"') { 
+                    if (s[j] == '\\') ++j; ++j; 
+                }
+                
                 if (j >= s.size()) throw Error("unterminated string literal");
-                t.push_back(s.substr(i, j - i + 1)); i = j + 1; continue;
+                t.push_back(s.substr(i, j - i + 1)); 
+                i = j + 1; 
+                continue;
             }
+
             if (std::ispunct((unsigned char)s[i]) && s[i] != '_' && s[i] != '.') {
                 if (i + 1 < s.size() && (s.substr(i, 2) == "==" || s.substr(i, 2) == "!=" || s.substr(i, 2) == "<=" || s.substr(i, 2) == ">=")) {
-                    t.push_back(s.substr(i, 2)); i += 2;
+                    t.push_back(s.substr(i, 2)); 
+                    i += 2;
                 } else t.push_back(std::string(1, s[i++]));
                 continue;
             }
@@ -349,44 +403,70 @@ struct Lexer {
             while (j < s.size() && (std::isalnum((unsigned char)s[j]) || s[j] == '_' || s[j] == '.')) ++j;
             t.push_back(s.substr(i, j - i)); i = j;
         }
-    }
-    bool has() const { return p < t.size(); }
-    std::string peek() const { return has() ? t[p] : ""; }
-    std::string get() { if (!has()) throw Error("unexpected end of command"); return t[p++]; }
-    bool eat(const std::string& x) { if (has() && ieq(peek(), x)) { ++p; return true; } return false; }
-    void need(const std::string& x) { if (!eat(x)) throw Error("expected: " + x); }
-};
+    } //Функция, анализирующая строку на правильность.
+    bool has() const { 
+        return p < t.size(); 
+    }//Функция, проверяющая все ли строки использованы.
+
+    std::string peek() const { 
+        return has() ? t[p] : ""; 
+    } //Посмотреть текущую строку
+
+    std::string get() { 
+        if (!has()) throw Error("unexpected end of command"); 
+        return t[p++]; 
+    }//Получить текущую строку и двигаемся дальше, Нарушение SOLID
+
+    bool eat(const std::string& x) { 
+        if (has() && ieq(peek(), x)) { 
+            ++p; 
+            return true; 
+        } 
+        return false; 
+    } //Проверка использована ли строка
+    
+    void need(const std::string& x) { 
+        if (!eat(x)) throw Error("expected: " + x); 
+    } // Проверка на то, что строка нужна
+}; // Структура для анализа команд для Базы Данных.
 
 class Engine {
-    fs::path root = "data";
-    std::string currentDb;
-    InternPool pool;
+    fs::path root = "data"; //Корень баз данных
+    std::string currentDb; //Имя текущей базы данных.
+    InternPool pool; 
 
-    fs::path dbPath(const std::string& db) const { return root / db; }
+    fs::path dbPath(const std::string& db) const { 
+        return root / db; 
+    } //Вернуть путь к базе данных с именем db
+
     std::pair<std::string,std::string> resolveTable(std::string name) const {
         auto dot = name.find('.');
         if (dot != std::string::npos) return {name.substr(0, dot), name.substr(dot + 1)};
         if (currentDb.empty()) throw Error("database is not selected; use USE database_name");
         return {currentDb, name};
-    }
+    } // Проверка разрешения базы данных
+
     Table openTable(const std::string& name) {
         auto [db, tb] = resolveTable(name);
         Table t(dbPath(db) / tb, pool);
         if (!fs::exists(t.schemaFile())) throw Error("table does not exist: " + name);
         t.load();
         return t;
-    }
+    }// Получение базы данных с именем name.
+
     void log(const std::string& q, const std::string& status) {
         fs::create_directories(root);
         std::ofstream f(root / "access.log", std::ios::app);
         f << nowStamp() << " client=local handler=cli status=" << status << " query=" << q << "\n";
-    }
+    }// Вывод состояния в поток вывода.
+
     Value literalOrColumn(Table& t, const Row& r, const std::string& tok) {
         if (!tok.empty() && tok.front() == '"') return Value::string(tok.substr(1, tok.size() - 2), pool);
         if (ieq(tok, "NULL")) return Value::null();
         if (!tok.empty() && (std::isdigit((unsigned char)tok[0]) || tok[0] == '-')) return Value::integer(std::stoi(tok));
         return r[t.colId(tok)];
-    }
+    } //Функция для различий между столбцом и КОМАНДАМИ ???
+
     bool predicate(Table& t, const Row& r, Lexer& lx) {
         if (lx.eat("(")) { bool v = expr(t, r, lx); lx.need(")"); return v; }
         std::string left = lx.get();
@@ -407,17 +487,20 @@ class Engine {
         if (op == "==") return c == 0; if (op == "!=") return c != 0; if (op == "<") return c < 0;
         if (op == ">") return c > 0; if (op == "<=") return c <= 0; if (op == ">=") return c >= 0;
         throw Error("unknown comparison operator: " + op);
-    }
+    } // Функция для определения операций сравнений
+
     bool andExpr(Table& t, const Row& r, Lexer& lx) {
         bool v = predicate(t, r, lx);
         while (lx.eat("AND")) v = predicate(t, r, lx) && v;
         return v;
-    }
+    } // Для определения оператора and
+
     bool expr(Table& t, const Row& r, Lexer& lx) {
         bool v = andExpr(t, r, lx);
         while (lx.eat("OR")) v = andExpr(t, r, lx) || v;
         return v;
-    }
+    } // Для определения оператора щк
+
     std::vector<size_t> filter(Table& t, const std::string& where) {
         std::vector<size_t> ids;
         if (trim(where).empty()) { for (size_t i = 0; i < t.rows.size(); ++i) ids.push_back(i); return ids; }
@@ -432,7 +515,8 @@ class Engine {
             if (expr(t, t.rows[i], lx)) ids.push_back(i);
         }
         return ids;
-    }
+    } // Для отбора данных из таблицы.
+
     std::string jsonRows(Table& t, const std::vector<size_t>& ids, const std::vector<std::pair<std::string,std::string>>& cols) {
         std::ostringstream o; o << "[";
         for (size_t k = 0; k < ids.size(); ++k) {
@@ -447,7 +531,7 @@ class Engine {
         }
         o << "]";
         return o.str();
-    }
+    } // Получение данных в json формате
 
 public:
     std::string exec(const std::string& q0) {
@@ -461,7 +545,7 @@ public:
             log(q, std::string("ERROR:") + e.what());
             return std::string("ERROR: ") + e.what();
         }
-    }
+    } // Выполнение команды
 
     std::string run(const std::string& q) {
         Lexer lx(q);
@@ -576,8 +660,8 @@ public:
         }
         if (cmd == "TELEMETRY") return "[{\"mode\":\"local\",\"status\":\"available\",\"metric\":\"access log is stored in data/access.log\"}]";
         throw Error("unsupported command");
-    }
-};
+    } // Выполнение команд.
+}; // Класс для выполнения команд.
 
 static std::vector<std::string> readCommands(std::istream& in) {
     std::vector<std::string> cmds; std::string line, cur;
@@ -591,7 +675,7 @@ static std::vector<std::string> readCommands(std::istream& in) {
     }
     if (!trim(cur).empty()) throw Error("last command is not terminated by ';'");
     return cmds;
-}
+} // Для чтения команд.
 
 int main(int argc, char** argv) {
     Engine e;
@@ -618,4 +702,4 @@ int main(int argc, char** argv) {
         return 1;
     }
     return 0;
-}
+} // Главная функция, которая заправляет всем.
