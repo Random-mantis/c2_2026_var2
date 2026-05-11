@@ -1,0 +1,8 @@
+[
+{
+  "directory": "C:/Users/Kostya/Desktop/sys_prog/Curs/build",
+  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe   -g -std=c++17 -o CMakeFiles\\cwdb.dir\\src\\main.cpp.obj -c C:\\Users\\Kostya\\Desktop\\sys_prog\\Curs\\c2_2026_var2\\src\\main.cpp",
+  "file": "C:/Users/Kostya/Desktop/sys_prog/Curs/c2_2026_var2/src/main.cpp",
+  "output": "CMakeFiles/cwdb.dir/src/main.cpp.obj"
+}
+]

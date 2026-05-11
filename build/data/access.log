@@ -1,0 +1,155 @@
+2026.05.11-13:58:47.018 client=local handler=cli status=OK query=CREATE DATABASE tests(id int INDEXED, string string, int int)
+2026.05.11-14:00:19.277 client=local handler=cli status=ERROR:database is not selected; use USE database_name query=INSERT INTO tests(1, "", 213), (2, NULL, NULL), (NULL, NULL, NULL)
+2026.05.11-14:01:16.180 client=local handler=cli status=ERROR:database is not selected; use USE database_name query=INSERT INTO tests(id, string, int) (1, "", 213), (2, NULL, NULL), (NULL, NULL, NULL)
+2026.05.11-14:01:37.291 client=local handler=cli status=OK query=USE tests
+
+2026.05.11-14:01:49.385 client=local handler=cli status=ERROR:table does not exist: tests query=INSERT INTO tests(id, string, int) (1, "", 213), (2, NULL, NULL), (NULL, NULL, NULL)
+2026.05.11-14:02:39.303 client=local handler=cli status=OK query=USE tests
+2026.05.11-14:02:39.305 client=local handler=cli status=ERROR:table does not exist: tests query=INSERT INTO tests(id, string, int) (1, "", 213), (2, NULL, NULL), (NULL, NULL, NULL)
+2026.05.11-14:04:28.110 client=local handler=cli status=OK query=USE tests
+2026.05.11-14:05:32.026 client=local handler=cli status=OK query=CREATE TABLE test1 (indexed int INDEXED, string string, int int)
+2026.05.11-14:10:35.702 client=local handler=cli status=OK query=InsERt     INtO   test1(indexed,      string,         int)     VaLUe    (124, "",                       1345),         (  2, NULL, NULL)      (13, "fasdertyu",      24)
+2026.05.11-14:11:18.642 client=local handler=cli status=OK query=SELEcT * FROM test1
+2026.05.11-14:13:00.070 client=local handler=cli status=OK query=SELECT (indexed, string, int) FRoM test1 WHERE  string == null
+2026.05.11-14:16:46.789 client=local handler=cli status=ERROR:unknown column: id query=SELECT (indexed as id, string as something, int as int) FROM test1    WHERE id == 13 OR (something == null AND int == null)
+2026.05.11-14:17:16.530 client=local handler=cli status=ERROR:unknown column: id query=SELECT (indexed AS id, string as something, int as int) FROM test1    WHERE id == 13 OR (something == null AND int == null)
+2026.05.11-14:18:43.208 client=local handler=cli status=OK query=SELECT (indexed AS id, string as something, int as int) FROM test1    WHERE indexed == 13 OR (string == null AND int == null)
+2026.05.11-14:23:55.290 client=local handler=cli status=ERROR:table does not exist: students query=SELECT (COUNT(indexed) AS id, string, AVG(int)as avg) from students where string AND int
+2026.05.11-14:24:11.648 client=local handler=cli status=ERROR:unknown comparison operator: AND query=SELECT (COUNT(indexed) AS id, string, AVG(int)as avg) from test1 where string AND int
+2026.05.11-14:24:46.401 client=local handler=cli status=ERROR:unexpected end of command query=SELECT (COUNT(indexed) AS id, string, AVG(int)as avg) from test1 where string
+2026.05.11-14:25:15.914 client=local handler=cli status=OK query=SELECT (COUNT(indexed) AS id, string, AVG(int)as avg) from test1 where string != null AND int != NULL
+2026.05.11-14:25:28.095 client=local handler=cli status=OK query=SELECT (COUNT(indexed) AS id, string, AVG(int)as avg) from test1 where string != null
+2026.05.11-14:26:16.372 client=local handler=cli status=OK query=SELECT (COUNT(indexed) AS id, string AS string, AVG(int)as avg) from test1 where string != null
+2026.05.11-14:27:41.649 client=local handler=cli status=OK query=SELECT (SUM(int)) FROM test1
+
+2026.05.11-14:29:14.881 client=local handler=cli status=ERROR:expected string literal: 124 query=UPDATE test1 SET string = 124 WHERE indexed = 1
+2026.05.11-14:29:38.317 client=local handler=cli status=ERROR:unknown comparison operator: = query=UPDATE test1 SET string = "124" WHERE indexed = 1
+2026.05.11-14:29:43.694 client=local handler=cli status=OK query=UPDATE test1 SET string = "124" WHERE indexed == 1
+2026.05.11-14:29:59.404 client=local handler=cli status=ERROR:table does not exist: test query=SELECT * from test 1
+2026.05.11-14:30:05.230 client=local handler=cli status=OK query=SELECT * from test1
+2026.05.11-14:34:47.441 client=local handler=cli status=OK query=SELECT * from test1 WHERE int BETwEEn 0 AnD 100000 )
+2026.05.11-14:36:26.149 client=local handler=cli status=ERROR:Mismatched '(' and ')' in regular expression query=SELECT * from test1 where string LiKe "*"
+2026.05.11-14:37:19.909 client=local handler=cli status=ERROR:Mismatched '(' and ')' in regular expression query=SELECT * from test1 where string LiKe "*"
+2026.05.11-14:37:30.631 client=local handler=cli status=ERROR:LIKE requires strings query=SELECT * from test1 where string LiKe ""
+2026.05.11-14:38:57.225 client=local handler=cli status=ERROR:unknown comparison operator: = query=DELETE from test1 where string = null
+2026.05.11-14:39:03.559 client=local handler=cli status=OK query=DELETE from test1 where string == null
+2026.05.11-15:05:19.456 client=local handler=cli status=ERROR:database does not exist: test query=USE test
+2026.05.11-15:05:19.458 client=local handler=cli status=ERROR:database is not selected query=CREATE table test2 (INT id, StRinG NoT NulL name, InT digit)
+2026.05.11-15:05:19.459 client=local handler=cli status=ERROR:database is not selected; use USE database_name query=Insert IntO              test2 ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13)
+2026.05.11-15:05:19.461 client=local handler=cli status=ERROR:database is not selected; use USE database_name query=SELECT * FroM                            test2
+2026.05.11-15:05:19.462 client=local handler=cli status=ERROR:database is not selected; use USE database_name query=SeLeCt (id, name As something, digit As         int) from test2    Where int BetwEEn 0 And 100
+2026.05.11-15:05:19.464 client=local handler=cli status=ERROR:database is not selected; use USE database_name query=SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2
+2026.05.11-15:05:19.466 client=local handler=cli status=ERROR:expected: FROM query=SeLect (Count(id),          name,                       sum(digit)) WHERE name == "" OR (id < 3 and digit     < 100000)
+2026.05.11-15:05:19.467 client=local handler=cli status=ERROR:expected: FROM query=SeleCt(name as chosen) where name LIke "c*" Or ".e*"
+2026.05.11-15:10:48.530 client=local handler=cli status=ERROR:unsupported command query=/*USE test
+2026.05.11-15:10:48.531 client=local handler=cli status=ERROR:database is not selected query=CREATE table test2 (INT id, StRinG NoT NulL name, InT digit)
+2026.05.11-15:10:48.533 client=local handler=cli status=ERROR:database is not selected; use USE database_name query=Insert IntO              test2 ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13)
+2026.05.11-15:10:48.535 client=local handler=cli status=ERROR:database is not selected; use USE database_name query=SELECT * FroM                            test2
+2026.05.11-15:10:48.536 client=local handler=cli status=ERROR:database is not selected; use USE database_name query=SeLeCt (id, name As something, digit As         int) from test2    Where int BetwEEn 0 And 100
+2026.05.11-15:10:48.538 client=local handler=cli status=ERROR:database is not selected; use USE database_name query=SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2
+2026.05.11-15:10:48.540 client=local handler=cli status=ERROR:expected: FROM query=SeLect (Count(id),          name,                       sum(digit)) WHERE name == "" OR (id < 3 and digit     < 100000)
+2026.05.11-15:10:48.542 client=local handler=cli status=ERROR:expected: FROM query=SeleCt(name as chosen) where name LIke "c*" Or ".e*"
+2026.05.11-15:24:36.583 client=local handler=cli status=ERROR:database does not exist: test query=USE test
+2026.05.11-15:24:36.585 client=local handler=cli status=ERROR:database is not selected query=CREATE table test2 (INT id, StRinG NoT NulL name, InT digit)
+2026.05.11-15:24:36.587 client=local handler=cli status=ERROR:database is not selected; use USE database_name query=Insert IntO              test2 ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13)
+2026.05.11-15:24:36.588 client=local handler=cli status=ERROR:database is not selected; use USE database_name query=SELECT * FroM                            test2
+2026.05.11-15:24:36.590 client=local handler=cli status=ERROR:database is not selected; use USE database_name query=SeLeCt (id, name As something, digit As         int) from test2    Where int BetwEEn 0 And 100
+2026.05.11-15:24:36.592 client=local handler=cli status=ERROR:database is not selected; use USE database_name query=SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2
+2026.05.11-15:24:36.593 client=local handler=cli status=ERROR:expected: FROM query=SeLect (Count(id),          name,                       sum(digit)) WHERE name == "" OR (id < 3 and digit     < 100000)
+2026.05.11-15:24:36.595 client=local handler=cli status=ERROR:expected: FROM query=SeleCt(name as chosen) where name LIke "c*" Or ".e*"
+2026.05.11-15:26:40.230 client=local handler=cli status=OK query=USE tests
+2026.05.11-15:26:40.232 client=local handler=cli status=ERROR:unknown type: id query=CREATE table test2 (INT id, StRinG NoT NulL name, InT digit)
+2026.05.11-15:26:40.234 client=local handler=cli status=ERROR:table does not exist: test2 query=Insert IntO              test2 ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13)
+2026.05.11-15:26:40.237 client=local handler=cli status=ERROR:table does not exist: test2 query=SELECT * FroM                            test2
+2026.05.11-15:26:40.239 client=local handler=cli status=ERROR:table does not exist: test2 query=SeLeCt (id, name As something, digit As         int) from test2    Where int BetwEEn 0 And 100
+2026.05.11-15:26:40.240 client=local handler=cli status=ERROR:table does not exist: test2 query=SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2
+2026.05.11-15:26:40.242 client=local handler=cli status=ERROR:table does not exist: test2 query=SeLect (Count(id),          name,                       sum(digit)) FROM test2 WHERE name == "" OR (id < 3 and digit     < 100000)
+2026.05.11-15:26:40.244 client=local handler=cli status=ERROR:table does not exist: test2 query=SeleCt(name as chosen) FROM test2 where name LIke "c*" Or name LIKE ".e*"
+2026.05.11-15:27:21.108 client=local handler=cli status=OK query=USE tests
+2026.05.11-15:27:21.110 client=local handler=cli status=ERROR:unknown type: id query=CREATE table test2 (INDEXED id, StRinG NoT NulL name, InT digit)
+2026.05.11-15:27:21.112 client=local handler=cli status=ERROR:table does not exist: test2 query=Insert IntO              test2 ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13)
+2026.05.11-15:27:21.114 client=local handler=cli status=ERROR:table does not exist: test2 query=SELECT * FroM                            test2
+2026.05.11-15:27:21.115 client=local handler=cli status=ERROR:table does not exist: test2 query=SeLeCt (id, name As something, digit As         int) from test2    Where int BetwEEn 0 And 100
+2026.05.11-15:27:21.118 client=local handler=cli status=ERROR:table does not exist: test2 query=SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2
+2026.05.11-15:27:21.120 client=local handler=cli status=ERROR:table does not exist: test2 query=SeLect (Count(id),          name,                       sum(digit)) FROM test2 WHERE name == "" OR (id < 3 and digit     < 100000)
+2026.05.11-15:27:21.122 client=local handler=cli status=ERROR:table does not exist: test2 query=SeleCt(name as chosen) FROM test2 where name LIke "c*" Or name LIKE ".e*"
+2026.05.11-15:28:40.917 client=local handler=cli status=OK query=USE tests
+2026.05.11-15:28:40.919 client=local handler=cli status=ERROR:unknown column modifier: NoT query=CREATE table test2 (id Int INDEXED , name StRinG NoT NulL , digit Int)
+2026.05.11-15:28:40.921 client=local handler=cli status=ERROR:table does not exist: test2 query=Insert IntO              test2 ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13)
+2026.05.11-15:28:40.923 client=local handler=cli status=ERROR:table does not exist: test2 query=SELECT * FroM                            test2
+2026.05.11-15:28:40.924 client=local handler=cli status=ERROR:table does not exist: test2 query=SeLeCt (id, name As something, digit As         int) from test2    Where int BetwEEn 0 And 100
+2026.05.11-15:28:40.927 client=local handler=cli status=ERROR:table does not exist: test2 query=SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2
+2026.05.11-15:28:40.929 client=local handler=cli status=ERROR:table does not exist: test2 query=SeLect (Count(id),          name,                       sum(digit)) FROM test2 WHERE name == "" OR (id < 3 and digit     < 100000)
+2026.05.11-15:28:40.932 client=local handler=cli status=ERROR:table does not exist: test2 query=SeleCt(name as chosen) FROM test2 where name LIke "c*" Or name LIKE ".e*"
+2026.05.11-15:29:37.598 client=local handler=cli status=OK query=USE tests
+2026.05.11-15:29:37.600 client=local handler=cli status=ERROR:unknown column modifier: NoT query=CREATE table test2 (id Int INDEXED , name StRinG NoT NulL, digit Int)
+2026.05.11-15:29:37.602 client=local handler=cli status=ERROR:table does not exist: test2 query=Insert IntO              test2 ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13)
+2026.05.11-15:29:37.603 client=local handler=cli status=ERROR:table does not exist: test2 query=SELECT * FroM                            test2
+2026.05.11-15:29:37.605 client=local handler=cli status=ERROR:table does not exist: test2 query=SeLeCt (id, name As something, digit As         int) from test2    Where int BetwEEn 0 And 100
+2026.05.11-15:29:37.606 client=local handler=cli status=ERROR:table does not exist: test2 query=SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2
+2026.05.11-15:29:37.608 client=local handler=cli status=ERROR:table does not exist: test2 query=SeLect (Count(id),          name,                       sum(digit)) FROM test2 WHERE name == "" OR (id < 3 and digit     < 100000)
+2026.05.11-15:29:37.610 client=local handler=cli status=ERROR:table does not exist: test2 query=SeleCt(name as chosen) FROM test2 where name LIke "c*" Or name LIKE ".e*"
+2026.05.11-15:30:17.574 client=local handler=cli status=OK query=USE tests
+2026.05.11-15:30:17.580 client=local handler=cli status=OK query=CREATE table test2 (id Int INDEXED , name StRinG NoT_NulL, digit Int)
+2026.05.11-15:30:17.617 client=local handler=cli status=ERROR:expected: ( query=Insert IntO              test2 ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13)
+2026.05.11-15:30:17.620 client=local handler=cli status=OK query=SELECT * FroM                            test2
+2026.05.11-15:30:17.623 client=local handler=cli status=OK query=SeLeCt (id, name As something, digit As         int) from test2    Where int BetwEEn 0 And 100
+2026.05.11-15:30:17.626 client=local handler=cli status=OK query=SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2
+2026.05.11-15:30:17.628 client=local handler=cli status=OK query=SeLect (Count(id),          name,                       sum(digit)) FROM test2 WHERE name == "" OR (id < 3 and digit     < 100000)
+2026.05.11-15:30:17.630 client=local handler=cli status=OK query=SeleCt(name as chosen) FROM test2 where name LIke "c*" Or name LIKE ".e*"
+2026.05.11-15:31:58.185 client=local handler=cli status=OK query=USE tests
+2026.05.11-15:31:58.187 client=local handler=cli status=ERROR:table already exists: test2 query=CREATE table test2 (id Int INDEXED , name StRinG NoT_NulL, digit Int)
+2026.05.11-15:31:58.188 client=local handler=cli status=ERROR:table does not exist: ( query=Insert IntO   (id, name, digit)           test2 ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13)
+2026.05.11-15:31:58.191 client=local handler=cli status=OK query=SELECT * FroM                            test2
+2026.05.11-15:31:58.194 client=local handler=cli status=OK query=SeLeCt (id, name As something, digit As         int) from test2    Where int BetwEEn 0 And 100
+2026.05.11-15:31:58.197 client=local handler=cli status=OK query=SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2
+2026.05.11-15:31:58.200 client=local handler=cli status=OK query=SeLect (Count(id),          name,                       sum(digit)) FROM test2 WHERE name == "" OR (id < 3 and digit     < 100000)
+2026.05.11-15:31:58.203 client=local handler=cli status=OK query=SeleCt(name as chosen) FROM test2 where name LIke "c*" Or name LIKE ".e*"
+2026.05.11-15:33:25.884 client=local handler=cli status=OK query=USE tests
+2026.05.11-15:33:25.891 client=local handler=cli status=OK query=CREATE table test2 (id Int INDEXED , name StRinG NoT_NulL, digit Int)
+2026.05.11-15:33:25.893 client=local handler=cli status=ERROR:table does not exist: ( query=Insert IntO   (id, name, digit)           test2 ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13)
+2026.05.11-15:33:25.895 client=local handler=cli status=OK query=SELECT * FroM                            test2
+2026.05.11-15:33:25.898 client=local handler=cli status=OK query=SeLeCt (id, name As something, digit As         int) from test2    Where int BetwEEn 0 And 100
+2026.05.11-15:33:25.903 client=local handler=cli status=OK query=SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2
+2026.05.11-15:33:25.906 client=local handler=cli status=OK query=SeLect (Count(id),          name,                       sum(digit)) FROM test2 WHERE name == "" OR (id < 3 and digit     < 100000)
+2026.05.11-15:33:25.908 client=local handler=cli status=OK query=SeleCt(name as chosen) FROM test2 where name LIke "c*" Or name LIKE ".e*"
+2026.05.11-15:33:51.719 client=local handler=cli status=OK query=USE tests
+2026.05.11-15:33:51.726 client=local handler=cli status=OK query=CREATE table test2 (id Int INDEXED , name StRinG NoT_NulL, digit Int)
+2026.05.11-15:33:51.732 client=local handler=cli status=OK query=Insert IntO   test2(id, name, digit)           ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13)
+2026.05.11-15:33:51.755 client=local handler=cli status=OK query=SELECT * FroM                            test2
+2026.05.11-15:33:51.758 client=local handler=cli status=ERROR:unknown column: int query=SeLeCt (id, name As something, digit As         int) from test2    Where int BetwEEn 0 And 100
+2026.05.11-15:33:51.772 client=local handler=cli status=OK query=SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2
+2026.05.11-15:33:51.775 client=local handler=cli status=OK query=SeLect (Count(id),          name,                       sum(digit)) FROM test2 WHERE name == "" OR (id < 3 and digit     < 100000)
+2026.05.11-15:33:51.777 client=local handler=cli status=OK query=SeleCt(name as chosen) FROM test2 where name LIke "c*" Or name LIKE ".e*"
+2026.05.11-15:35:33.779 client=local handler=cli status=OK query=USE tests
+2026.05.11-15:35:33.781 client=local handler=cli status=ERROR:table already exists: test2 query=CREATE table test2 (id Int INDEXED , name StRinG NoT_NulL, digit Int)
+2026.05.11-15:35:33.783 client=local handler=cli status=ERROR:INDEXED column is not unique: id query=Insert IntO   test2(id, name, digit)           ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13)
+2026.05.11-15:35:33.786 client=local handler=cli status=OK query=SELECT * FroM                            test2
+2026.05.11-15:35:33.788 client=local handler=cli status=OK query=SeLeCt (id, name As something, digit As         int) from test2    Where digit BetwEEn 0 And 100
+2026.05.11-15:35:33.791 client=local handler=cli status=OK query=SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2
+2026.05.11-15:35:33.793 client=local handler=cli status=OK query=SeLect (Count(id),          name,                       sum(digit)) FROM test2 WHERE name == "" OR (id < 3 and digit     < 100000)
+2026.05.11-15:35:33.797 client=local handler=cli status=OK query=SeleCt(name as chosen) FROM test2 where name LIke "c%" Or name LIKE "_e%"
+2026.05.11-15:36:11.235 client=local handler=cli status=OK query=USE tests
+2026.05.11-15:36:11.237 client=local handler=cli status=ERROR:table already exists: test2 query=CREATE table test2 (id Int INDEXED , name StRinG NoT_NulL, digit Int)
+2026.05.11-15:36:11.240 client=local handler=cli status=ERROR:INDEXED column is not unique: id query=Insert IntO   test2(id, name, digit)           ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13)
+2026.05.11-15:36:11.242 client=local handler=cli status=OK query=SELECT * FroM                            test2
+2026.05.11-15:36:11.245 client=local handler=cli status=OK query=SeLeCt (id, name As something, digit As         int) from test2    Where digit BetwEEn 0 And 100
+2026.05.11-15:36:11.248 client=local handler=cli status=OK query=SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2
+2026.05.11-15:36:11.252 client=local handler=cli status=OK query=SeLect (Count(id),          name,                       sum(digit)) FROM test2 WHERE name == "" OR (id < 3 and digit     < 100000)
+2026.05.11-15:36:11.255 client=local handler=cli status=ERROR:Mismatched '(' and ')' in regular expression query=SeleCt(name as chosen) FROM test2 where name LIke "c*" Or name LIKE "?e*"
+2026.05.11-15:36:44.160 client=local handler=cli status=OK query=USE tests
+2026.05.11-15:36:44.162 client=local handler=cli status=ERROR:table already exists: test2 query=CREATE table test2 (id Int INDEXED , name StRinG NoT_NulL, digit Int)
+2026.05.11-15:36:44.165 client=local handler=cli status=ERROR:INDEXED column is not unique: id query=Insert IntO   test2(id, name, digit)           ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13)
+2026.05.11-15:36:44.168 client=local handler=cli status=OK query=SELECT * FroM                            test2
+2026.05.11-15:36:44.171 client=local handler=cli status=OK query=SeLeCt (id, name As something, digit As         int) from test2    Where digit BetwEEn 0 And 100
+2026.05.11-15:36:44.173 client=local handler=cli status=OK query=SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2
+2026.05.11-15:36:44.176 client=local handler=cli status=OK query=SeLect (Count(id),          name,                       sum(digit)) FROM test2 WHERE name == "" OR (id < 3 and digit     < 100000)
+2026.05.11-15:36:44.178 client=local handler=cli status=ERROR:unknown column: ( query=SeleCt(name as chosen) FROM test2 where name LIke ()"c*" Or "?e*")
+2026.05.11-15:36:57.777 client=local handler=cli status=OK query=USE tests
+2026.05.11-15:36:57.780 client=local handler=cli status=ERROR:table already exists: test2 query=CREATE table test2 (id Int INDEXED , name StRinG NoT_NulL, digit Int)
+2026.05.11-15:36:57.783 client=local handler=cli status=ERROR:INDEXED column is not unique: id query=Insert IntO   test2(id, name, digit)           ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13)
+2026.05.11-15:36:57.785 client=local handler=cli status=OK query=SELECT * FroM                            test2
+2026.05.11-15:36:57.788 client=local handler=cli status=OK query=SeLeCt (id, name As something, digit As         int) from test2    Where digit BetwEEn 0 And 100
+2026.05.11-15:36:57.790 client=local handler=cli status=OK query=SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2
+2026.05.11-15:36:57.792 client=local handler=cli status=OK query=SeLect (Count(id),          name,                       sum(digit)) FROM test2 WHERE name == "" OR (id < 3 and digit     < 100000)
+2026.05.11-15:36:57.795 client=local handler=cli status=ERROR:unknown column: ( query=SeleCt(name as chosen) FROM test2 where name LIke ("c*" Or "?e*")

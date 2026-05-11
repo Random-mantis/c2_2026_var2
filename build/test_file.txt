@@ -1,0 +1,10 @@
+/*USE test;
+CREATE table test2 (INT id, StRinG NoT NulL name, InT digit);
+Insert IntO              test2 ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13);
+SELECT * FroM                            test2;
+SeLeCt (id, name As something, digit As         int) from test2    Where int BetwEEn 0 And 100;
+SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2;
+SeLect (Count(id),          name,                       sum(digit)) WHERE name == "" OR (id < 3 and digit     < 100000);
+SeleCt(name as chosen) where name LIke "c*" Or ".e*"; первый вариант файла, второй такой же как первый но весь закоментированный*/
+
+          

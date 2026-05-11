@@ -1,0 +1,8 @@
+USE tests;
+CREATE table test2 (id Int INDEXED , name StRinG NoT_NulL, digit Int);
+Insert IntO   test2(id, name, digit)           ValUe (1, "wertigo", 145), (2, "carpet", 24), (3, "wedding", 145), (4, "final", 13);
+SELECT * FroM                            test2;
+SeLeCt (id, name As something, digit As         int) from test2    Where digit BetwEEn 0 And 100;
+SelecT (CoUNt(id) as total, COUNT(name), AVG(digit) as avg) FROM test2;
+SeLect (Count(id),          name,                       sum(digit)) FROM test2 WHERE name == "" OR (id < 3 and digit     < 100000);
+SeleCt(name as chosen) FROM test2 where name LIke ("c*" Or "?e*");

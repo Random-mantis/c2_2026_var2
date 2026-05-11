@@ -1,0 +1,3 @@
+C:/Users/Kostya/Desktop/sys_prog/Curs/build/CMakeFiles/cwdb.dir
+C:/Users/Kostya/Desktop/sys_prog/Curs/build/CMakeFiles/edit_cache.dir
+C:/Users/Kostya/Desktop/sys_prog/Curs/build/CMakeFiles/rebuild_cache.dir

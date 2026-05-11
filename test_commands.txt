@@ -1,0 +1,224 @@
+// 1 тест
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe"
+cwdb variant 2 (B+-tree). End commands with ;
+> CREATE DATABASE tests(id int INDEXED, string string, int int);
+OK
+> INSERT INTO tests(1, "", 213), (2, NULL, NULL), (NULL, NULL, NULL); 
+ERROR: database is not selected; use USE database_name
+> INSERT INTO tests(id, string, int) (1, "", 213), (2, NULL, NULL), (NULL, NULL, NULL);
+ERROR: database is not selected; use USE database_name
+> USE tests
+> ;
+OK
+> INSERT INTO tests(id, string, int) (1, "", 213), (2, NULL, NULL), (NULL, NULL, NULL);
+ERROR: table does not exist: tests
+> USE tests; INSERT INTO tests(id, string, int) (1, "", 213), (2, NULL, NULL), (NULL, NULL, NULL);
+OK
+ERROR: table does not exist: tests
+> 
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe"
+cwdb variant 2 (B+-tree). End commands with ;
+> USE tests;
+OK
+> CREATE TABLE test1 (indexed int INDEXED, string string, int int);
+OK
+> InsERt     INtO   test1(indexed,      string,         int)     VaLUe    (124, "",                       1345),         (  2, NULL, NULL)      (13, "fasdertyu",      24); 
+OK
+> SELEcT * FROM test1;
+[{"indexed":124,"string":"","int":1345},{"indexed":2,"string":null,"int":null}]
+> SELECT (indexed, string, int) FRoM test1 WHERE  string == null;
+[{"indexed":2,"string":null,"int":null}]
+> SELECT (indexed as id, string as something, int as int) FROM test1    WHERE id == 13 OR (something == null AND int == null);
+ERROR: unknown column: id
+> SELECT (indexed AS id, string as something, int as int) FROM test1    WHERE id == 13 OR (something == null AND int == null);
+ERROR: unknown column: id
+> SELECT (indexed AS id, string as something, int as int) FROM test1    WHERE indexed == 13 OR (string == null AND int == null);   
+[{"id":2,"something":null,"int":null}]
+> SELECT (COUNT(indexed) AS id, string, AVG(int)as avg) from students where string AND int;
+ERROR: table does not exist: students
+> SELECT (COUNT(indexed) AS id, string, AVG(int)as avg) from test1 where string AND int;   
+ERROR: unknown comparison operator: AND
+> SELECT (COUNT(indexed) AS id, string, AVG(int)as avg) from test1 where string;        
+ERROR: unexpected end of command
+> SELECT (COUNT(indexed) AS id, string, AVG(int)as avg) from test1 where string != null AND int != NULL;
+[{"id":1,"avg":1345}]
+> SELECT (COUNT(indexed) AS id, string, AVG(int)as avg) from test1 where string != null;    
+[{"id":1,"avg":1345}]
+> SELECT (COUNT(indexed) AS id, string AS string, AVG(int)as avg) from test1 where string != null;
+[{"id":1,"avg":1345}]
+> SELECT (SUM(int)) FROM test1
+> ;
+[{"SUM_int":1345}]
+> UPDATE test1 SET string = 124 WHERE indexed = 1;
+ERROR: expected string literal: 124
+> UPDATE test1 SET string = "124" WHERE indexed = 1; 
+ERROR: unknown comparison operator: =
+> UPDATE test1 SET string = "124" WHERE indexed == 1;
+OK
+> SELECT * from test 1; 
+ERROR: table does not exist: test
+> SELECT * from test1; 
+[{"indexed":124,"string":"","int":1345},{"indexed":2,"string":null,"int":null}]
+> SELECT * from test1 WHERE int BETwEEn 0 AnD 100000 );
+[{"indexed":124,"string":"","int":1345}]
+> SELECT * from test1 where string LiKe "*";
+ERROR: Mismatched '(' and ')' in regular expression // Такого быть не должно!!!!
+> SELECT * from test1 where string LiKe 
+ERROR: Mismatched '(' and ')' in regular expression
+> SELECT * from test1 where string LiKe ""; 
+ERROR: LIKE requires strings // Здесь как бы ошибок не должно быть
+> DELETE from test1 where string = null;
+ERROR: unknown comparison operator: =
+> DELETE from test1 where string == null;
+OK
+> SELECT * from test1
+> // ctrl + C;
+
+
+// 2 тест;
+
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "unexist_file.txt"
+cannot open script: unexist_file.txt
+
+// 3 тест
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "test_file.txt"   
+ERROR: database does not exist: test
+ERROR: database is not selected
+ERROR: database is not selected; use USE database_name
+ERROR: database is not selected; use USE database_name
+ERROR: database is not selected; use USE database_name
+ERROR: database is not selected; use USE database_name
+ERROR: expected: FROM
+ERROR: expected: FROM
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "test_file.txt"
+Fatal error: last command is not terminated by ';'
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "test_file.txt"
+ERROR: unsupported command
+ERROR: database is not selected
+ERROR: database is not selected; use USE database_name
+ERROR: database is not selected; use USE database_name
+ERROR: database is not selected; use USE database_name
+ERROR: database is not selected; use USE database_name
+ERROR: expected: FROM
+ERROR: expected: FROM
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> 
+
+// 4 тест
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "test_file2.txt"  
+ERROR: database does not exist: test
+ERROR: database is not selected
+ERROR: database is not selected; use USE database_name
+ERROR: database is not selected; use USE database_name
+ERROR: database is not selected; use USE database_name
+ERROR: database is not selected; use USE database_name
+ERROR: expected: FROM
+ERROR: expected: FROM
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "test_file2.txt"      
+OK
+ERROR: unknown type: id
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "test_file2.txt"
+OK
+ERROR: unknown type: id
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "test_file2.txt"
+OK
+ERROR: unknown column modifier: NoT
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+PS C:\Users\Kostya\Desktop\sys_prog\C."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "test_file2.txt"
+OK
+ERROR: unknown column modifier: NoT
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+ERROR: table does not exist: test2
+PS C:\Users\K."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "test_file2.txt"
+OK
+OK
+ERROR: expected: (
+[]
+[]
+[{"total":0,"COUNT_name":0,"avg":0}]
+[{"COUNT_id":0,"SUM_digit":0}]
+[]
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "test_file2.txt"
+OK
+ERROR: table already exists: test2
+ERROR: table does not exist: (
+[]
+[]
+[{"total":0,"COUNT_name":0,"avg":0}]
+[{"COUNT_id":0,"SUM_digit":0}]
+[]
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "test_file2.txt"
+OK
+OK
+ERROR: table does not exist: (
+[]
+[]
+[{"total":0,"COUNT_name":0,"avg":0}]
+[{"COUNT_id":0,"SUM_digit":0}]
+[]
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "test_file2.txt"
+OK
+OK
+OK
+[{"id":1,"name":"wertigo","digit":145},{"id":2,"name":"carpet","digit":24},{"id":3,"name":"wedding","digit":145},{"id":4,"name":"final","digit":13}]
+ERROR: unknown column: int
+[{"total":4,"COUNT_name":4,"avg":81.75}]
+[{"COUNT_id":2,"SUM_digit":169}]
+[]
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "test_file2.txt"
+OK
+ERROR: table already exists: test2
+ERROR: INDEXED column is not unique: id
+[{"id":1,"name":"wertigo","digit":145},{"id":2,"name":"carpet","digit":24},{"id":3,"name":"wedding","digit":145},{"id":4,"name":"final","digit":13}]
+[{"id":2,"something":"carpet","int":24},{"id":4,"something":"final","int":13}]
+[{"total":4,"COUNT_name":4,"avg":81.75}]
+[{"COUNT_id":2,"SUM_digit":169}]
+[]
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "test_file2.txt"
+OK
+ERROR: table already exists: test2
+ERROR: INDEXED column is not unique: id
+[{"id":1,"name":"wertigo","digit":145},{"id":2,"name":"carpet","digit":24},{"id":3,"name":"wedding","digit":145},{"id":4,"name":"final","digit":13}]
+[{"id":2,"something":"carpet","int":24},{"id":4,"something":"final","int":13}]
+[{"total":4,"COUNT_name":4,"avg":81.75}]
+[{"COUNT_id":2,"SUM_digit":169}]
+ERROR: Mismatched '(' and ')' in regular expression
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "test_file2.txt"
+OK
+ERROR: table already exists: test2
+ERROR: INDEXED column is not unique: id
+[{"id":1,"name":"wertigo","digit":145},{"id":2,"name":"carpet","digit":24},{"id":3,"name":"wedding","digit":145},{"id":4,"name":"final","digit":13}]
+[{"id":2,"something":"carpet","int":24},{"id":4,"something":"final","int":13}]
+[{"total":4,"COUNT_name":4,"avg":81.75}]
+[{"COUNT_id":2,"SUM_digit":169}]
+ERROR: unknown column: (
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build> ."C:/Users/Kostya/Desktop/sys_prog/Curs/build/cwdb.exe" "test_file2.txt"
+OK
+ERROR: table already exists: test2
+ERROR: INDEXED column is not unique: id
+[{"id":1,"name":"wertigo","digit":145},{"id":2,"name":"carpet","digit":24},{"id":3,"name":"wedding","digit":145},{"id":4,"name":"final","digit":13}]
+[{"id":2,"something":"carpet","int":24},{"id":4,"something":"final","int":13}]
+[{"total":4,"COUNT_name":4,"avg":81.75}]
+[{"COUNT_id":2,"SUM_digit":169}]
+ERROR: unknown column: (
+PS C:\Users\Kostya\Desktop\sys_prog\Curs\build>  
